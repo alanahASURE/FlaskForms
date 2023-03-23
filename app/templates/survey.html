@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Survey Results {% endblock %}</h1>
+    <hr>
+    {% for survey in survey_list %}
+        <h4> {{ survey['name'] }} </h4>
+        <p> {{ survey['age'] }} </p>
+        <p> {{ survey['email'] }} </p>
+        <p> {{ survey['zipcode'] }} </p>
+    <hr>
+    {% endfor %}
+{% endblock %}

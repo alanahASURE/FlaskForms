@@ -1,0 +1,7 @@
+pip==23.0.1
+setuptools==67.6.0
+wheel==0.40.0
+Flask==2.2.3
+Flask-SQLAlchemy==3.0.3
+Flask-WTF==1.1.1
+WTForms==3.0.1
