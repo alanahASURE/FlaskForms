@@ -1,75 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{% block title %} Survey {% endblock %}</h1>
-
-<form method="POST" action="/">
-  {{ form.csrf_token }}
-  <p>
-    {{ form.name.label }}
-    {{ form.name(size=20) }}
-  </p>
-
-  {% if form.name.errors %}
-  <ul class="errors">
-    {% for error in form.name.errors %}
-    <li>{{ error }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-  <p>
-    {{ form.age.label }}
-    {{ form.age(size=20) }}
-  </p>
-
-  {% if form.age.errors %}
-  <ul class="errors">
-    {% for error in form.age.errors %}
-    <li>{{ error }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-  <p>
-    {{ form.email.label }}
-    {{ form.email() }}
-  </p>
-
-  {% if form.email.errors %}
-  <ul class="errors">
-    {% for error in form.email.errors %}
-    <li>{{ error }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-  <p>
-    {{ form.zipcode.label }}
-    {{ form.zipcode() }}
-  </p>
-  {% if form.zipcode.errors %}
-  <ul class="errors">
-    {% for error in form.zipcode.errors %}
-    <li>{{ error }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-
-  <p>
-    <input type="submit" value="Add">
-  </p>
-</form>
-
-{% for post in posts %}
-<div class='post'>
-  <p>{{ post['created'] }}</p>
-  <h2>{{ post['title'] }}</h2>
-  <p>{{ post['content'] }}</p>
-  <a href="{{ url_for('edit', id=post['id']) }}">Edit</a>
-</div>
-{% endfor %}
-
-
+  <h1>{% block title %} Surveys {% endblock %}</h1>
+  {% for survey in surveys %}
+    <div class='post'>
+      <p>{{ survey['created'] }}</p>
+      <h2>{{ survey['name'] }}</h2>
+      <p>{{ survey['age'] }}</p>
+      <p>{{ survey['email'] }}</p>
+      <p>{{ survey['zipcode'] }}</p>
+      <a href="{{ url_for('edit', id=survey['id']) }}">Edit</a>
+    </div>
+  {% endfor %}
 {% endblock %}

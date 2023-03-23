@@ -11,39 +11,54 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-def get_post(post_id):
+def get_survey(survey_id):
     conn = get_db_connection()
-    post = conn.execute('SELECT * FROM posts WHERE id = ?',
-                        (post_id,)).fetchone()
+    survey = conn.execute('SELECT * FROM surveys WHERE id = ?',
+                        (survey_id,)).fetchone()
     conn.close()
-    if post is None:
+    if survey is None:
         abort(404)
-    return post
+    return survey
 
 @app.route('/<int:id>/edit/', methods=('GET', 'POST'))
 def edit(id):
-    post = get_post(id)
+    survey = get_survey(id)
 
     if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
+        name = request.form['name']
+        age = request.form['age']
+        email = request.form['email']
+        zipcode = request.form['zipcode']
 
-        if not title:
-            flash('Title is required!')
-
-        elif not content:
-            flash('Content is required!')
+        if not name:
+            flash('Name is required!')
+        elif not age:
+            flash('Age is required!')
+        elif not email:
+            flash('Email is required!')
+        elif not zipcode:
+            flash('Zip code is required!')
 
         else:
             conn = get_db_connection()
-            conn.execute('UPDATE posts SET title = ?, content = ?'
+            conn.execute('UPDATE surveys SET name = ?, age = ?, email = ?, zipcode = ?'
                          ' WHERE id = ?',
-                         (title, content, id))
+                         (name, age, email, zipcode, id))
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
 
-    return render_template('edit.html', post=post)
+    return render_template('edit.html', survey=survey)
+
+@app.route('/<int:id>/delete/', methods=('POST',))
+def delete(id):
+    survey = get_survey(id)
+    conn = get_db_connection()
+    conn.execute('DELETE FROM surveys WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    flash('"{}" was successfully deleted!'.format(survey['name']))
+    return redirect(url_for('index'))
 
 survey_list = [{
     'name': 'Lana',
@@ -66,10 +81,9 @@ def index():
         return redirect(url_for('survey'))
     #database
     conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM posts').fetchall()
+    surveys = conn.execute('SELECT * FROM surveys').fetchall()
     conn.close()
-
-    return render_template('index.html', form=form, posts=posts)
+    return render_template('index.html', surveys=surveys)
 
 
 @app.route('/survey/')
@@ -79,17 +93,23 @@ def survey():
 @app.route('/create/', methods=('GET', 'POST'))
 def create():
     if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
+        name = request.form['name']
+        age = request.form['age']
+        email = request.form['email']
+        zipcode = request.form['zipcode']
 
-        if not title:
-            flash('Title is required!')
-        elif not content:
-            flash('Content is required!')
+        if not name:
+            flash('Name is required!')
+        elif not age:
+            flash('Age is required!')
+        elif not email:
+            flash('Email is required!')
+        elif not zipcode:
+            flash('Zip code is required!')
         else:
             conn = get_db_connection()
-            conn.execute('INSERT INTO posts (title, content) VALUES (?, ?)',
-                         (title, content))
+            conn.execute("INSERT INTO surveys (name, age, email, zipcode) VALUES (?, ?, ?, ?)",
+                        (name, age, email, zipcode))
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
